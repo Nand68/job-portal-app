@@ -1,16 +1,22 @@
-import { createContext } from "react";
+import React, { createContext, useState } from "react";
 
-// Create the context
 export const AppContext = createContext();
 
-// Context provider component
 export const AppContextProvider = (props) => {
-    // Define the value to be shared via context
+    const [searchFilter, setSearchFilter] = useState({
+        title: '',
+        location: ''
+    });
+
+    const [isSearched, setIsSearched] = useState(false);
+
     const value = { 
-        // Add state or methods here to share with children
+        setSearchFilter,
+        searchFilter,
+        isSearched,
+        setIsSearched
     };
 
-    // Return the provider
     return (
         <AppContext.Provider value={value}>
             {props.children}
