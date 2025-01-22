@@ -3,7 +3,7 @@ import { assets } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
 import { useRef } from 'react';
 
- 
+//  making of hero section
  const Hero = () => {
     const {setSearchFilter,setIsSearched} = useContext(AppContext)
 
