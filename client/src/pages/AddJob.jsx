@@ -13,6 +13,8 @@ const AddJob = () => {
   const editorRef = useRef(null);
   const quillRef = useRef(null);
 
+  
+
   useEffect(() => {
     if (!quillRef.current && editorRef.current) {
       quillRef.current = new Quill(editorRef.current, {
@@ -20,6 +22,8 @@ const AddJob = () => {
       });
     }
   }, []);
+
+
 
   const handleAddJob = (e) => {
     e.preventDefault();
