@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import generateToken from "../utils/generateToken.js";
 import Job from "../models/Job.js";
+import JobApplication from "../models/JobApplication.js"
 
 // Register a new company
 export const registerCompany = async (req, res) => {
@@ -130,19 +131,32 @@ export const getCompanyJobApplicants = async (req, res) => {
 };
 
 // Get Company Posted Jobs
+// Get Company Posted Jobs
 export const getCompanyPostedJobs = async (req, res) => {
   try {
-    const companyID = req.company._id
-    const jobs = await Job.find({companyID})
+    const companyId = req.company._id;
 
-    // (Todo adding no of applicants data)
+    // Fetch all jobs posted by the company
+    const jobs = await Job.find({ companyId });
 
-    res.json({success:true,jobsData:jobs})
+    if (!jobs.length) {
+      return res.status(404).json({ success: false, message: "No jobs found" });
+    }
 
+    // Map through jobs to attach the number of applicants
+    const jobsData = await Promise.all(
+      jobs.map(async (job) => {
+        const applicantCount = await JobApplication.countDocuments({ jobId: job._id });
+        return { ...job.toObject(), applicants: applicantCount };
+      })
+    );
+
+    return res.status(200).json({ success: true, jobsData });
   } catch (error) {
-    res.json({success:false,message:error.message})
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // Change job application status
 export const ChangeJobApplicationStatus = async (req, res) => {
@@ -154,7 +168,7 @@ export const ChangeVisiblity = async (req, res) => {
   try {
     const {id} = req.body
 
-    const companyId = req.body._id
+    const companyId = req.company._id
 
     const job = await Job.findById(id)
 

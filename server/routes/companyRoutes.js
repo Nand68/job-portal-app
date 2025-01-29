@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   ChangeJobApplicationStatus,
-  ChangeVisiblity,
+  ChangeVisiblity ,
   getCompanyData,
   getCompanyJobApplicants,
   getCompanyPostedJobs,

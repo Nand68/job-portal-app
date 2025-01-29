@@ -15,29 +15,30 @@ import Job from "../models/Job.js"
 
  // Get a single Job by ID
 
- export const getJobById = async( req, res) => {
+// Get a single Job by ID
+export const getJobById = async (req, res) => {
     try {
 
-        const {id} = req.params
+        const { id } = req.params
         const job = await Job.findById(id)
-        .populate({
-            path:'comanyID',
-            select:'-password'
-        })
-        
+            .populate({
+                path: 'companyId', // corrected from 'comanyID' to 'companyId'
+                select: '-password'
+            })
+
         if (!job) {
             return res.json({
-                success:false,
-                message:'job not found'
+                success: false,
+                message: 'job not found'
             })
         }
 
         res.json({
-            success:true,
+            success: true,
             job
         })
     } catch (error) {
-        res.json({success:false,message:error.message  })
+        res.json({ success: false, message: error.message })
     }
 
- }
+}
