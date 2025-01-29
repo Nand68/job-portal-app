@@ -4,13 +4,14 @@ import User from "../models/User.js";
 export const clerkWebhooks = async(req,res) => {
     try {
         // Create a Svix instance with clerk webhook secret
-        const whook = new Webhook (process.env.CLERK_WEBHOOK_SECRECT)
+        const whook = new Webhook (process.env.CLERK_WEBHOOK_SECRET)
         // Verifying Headers
-        await whook.verify(JSON.stringify(req.body),{
-            "svix-id" : req.heeader["svix-id"],
-            "svix-timestamp" : req.heeader["svix-timestamp"],
-            "svix-signature" : req.heeader["svix-signature"]
-        })
+        await whook.verify(JSON.stringify(req.body), {
+            "svix-id": req.headers["svix-id"],
+            "svix-timestamp": req.headers["svix-timestamp"],
+            "svix-signature": req.headers["svix-signature"]
+        });
+        
         // Getting Data from request body
         const { data, type } = req.body
         // Switch case for diffrent event
@@ -26,7 +27,7 @@ export const clerkWebhooks = async(req,res) => {
                 await User.create(userData)
                 res.json({})
                 break;
-            }c
+            }
             case 'user.updated':{
                 const userData = {
                     email:data.email_addresses[0].email_address,
@@ -37,7 +38,7 @@ export const clerkWebhooks = async(req,res) => {
                 res.json({})
                 break;
             }
-            case 'user.delected':{
+            case 'user.deleted':{
                 await User.findByIdAndDelete(data.id)
                 res.json({})
                 break;
